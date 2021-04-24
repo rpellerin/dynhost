@@ -25,7 +25,7 @@ rm -f $PATH_APP/ipcheck.err
 
 IP=`lynx -dump http://monip.org | grep 'IP' | sed 's/.*: //;'`
 OLD_IP=`cat $PATH_FILE_OLD_IP`
-OLD_ID=`dig @8.8.8.8 "$HOST" +short`
+OLD_IP_DIG=`dig @8.8.8.8 "$HOST" +short`
 
 echo > $PATH_LOG
 echo "Run dynhost" >> $PATH_LOG
@@ -39,7 +39,7 @@ echo "$OLD_IP" >> $PATH_LOG
 if [ -z $IP ]; then
         echo "No IP retrieved" >> $PATH_LOG
 else
-        if [ "$OLD_IP" != "$IP" ]; then
+        if [ "$OLD_IP" != "$IP" ] || [ "$OLD_IP_DIG" != "$IP" ]; then
                 echo "IP has changed" >> $PATH_LOG
                 RESULT=""
                 RESULT=`$PATH_APP/ipcheck.py -a $IP $LOGIN $PASSWORD $HOST`
